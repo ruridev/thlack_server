@@ -26,5 +26,17 @@ module Types
     def workspace(id:)
       Workspace.find(id)
     end
+
+    field :accounts, [Types::AccountType], null: false
+    def accounts
+      Account.all
+    end
+
+    field :account, Types::AccountType, null: false do
+      argument :id, Int, required: false
+    end
+    def account(id:)
+      Account.find(id)
+    end
   end
 end
