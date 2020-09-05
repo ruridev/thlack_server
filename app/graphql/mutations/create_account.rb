@@ -9,16 +9,21 @@ module Mutations
     argument :credentials, Types::AccountCredentialsInput, required: true
     
     def resolve(**args)
-      account = nil
-      user = nil
       ActiveRecord::Base.transaction do 
         user = User.create(name: args[:name])
-        account = Account.create(identifier: args[:credentials][:identifier], password: args[:credentials][:password], user: user, type: 'normal')
+        account = Account.create(
+          identifier: args[:credentials][:identifier],
+          password: args[:credentials][:password],
+          user: user,
+          type: ::AccountProvider::EmailProvider,
+        )
+        return { account: account,
+                 result: account.errors.blank? }
       end
+
       {
-        user: user,
-        identifier: account.identifier,
-        result: account.errors.blank?
+        account: nil,
+        result: false
       }
     end
   end
