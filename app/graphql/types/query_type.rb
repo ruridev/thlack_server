@@ -12,7 +12,7 @@ module Types
       argument :id, Int, required: false
     end
     def user(id:)
-      User.find(id)
+      User.find_by(id: id)
     end
 
     field :workspaces, [Types::WorkspaceType], null: false
@@ -24,7 +24,7 @@ module Types
       argument :id, Int, required: false
     end
     def workspace(id:)
-      Workspace.find(id)
+      Workspace.find_by(id: id)
     end
 
     field :accounts, [Types::AccountType], null: false
@@ -36,7 +36,7 @@ module Types
       argument :id, Int, required: false
     end
     def account(id:)
-      Account.find(id)
+      Account.find_by(id: id)
     end
   end
 end
