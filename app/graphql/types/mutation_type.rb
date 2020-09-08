@@ -6,6 +6,5 @@ module Types
     field :create_channel, mutation: Mutations::CreateChannel
     field :create_workspace, mutation: Mutations::CreateWorkspace
     field :create_account, mutation: Mutations::CreateAccount
-    field :create_user, mutation: Mutations::CreateUser
   end
 end

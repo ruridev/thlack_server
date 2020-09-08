@@ -4,7 +4,6 @@ class CreateAccounts < ActiveRecord::Migration[6.0]
       t.string :identifier, null: false
       t.string :type, null: false
       t.string :password_digest, null: false
-      t.references :user, null: false, foreign_key: true
 
       t.timestamps
     end
