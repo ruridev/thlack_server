@@ -13,6 +13,7 @@ gem 'firebase_id_token'
 gem 'graphql'
 gem 'jwt'
 gem 'rack-cors'
+gem 'fast_jsonapi'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

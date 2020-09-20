@@ -8,11 +8,14 @@ module Mutations
     argument :name, String, required: true
 
     def resolve(**args)
-      workspace = Workspace.create(name: args[:name])
-      {
-        workspace: workspace,
-        result: workspace.errors.blank?
-      }
+      ActiveRecord::Base.transaction do
+        workspace = Workspace.create(name: args[:name])
+        WorkspaceUser.create(user: context[:current_user], workspace: workspace)
+        {
+          workspace: workspace,
+          result: workspace.errors.blank?
+        }
+      end
     end
   end
 end

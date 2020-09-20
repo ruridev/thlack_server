@@ -9,11 +9,14 @@ module Mutations
     argument :workspace_id, Int, required: true
 
     def resolve(**args)
-      channel = Channel.create(name: args[:name], workspace_id: args[:workspace_id])
-      {
-        channel: channel,
-        result: channel.errors.blank?
-      }
+      ActiveRecord::Base.transaction do
+        channel = Channel.create_or_find_by(name: args[:name], workspace_id: args[:workspace_id])
+        ChannelUser.create_or_find_by(user: context[:current_user], channel: channel)
+        {
+          channel: channel,
+          result: channel.errors.blank?
+        }
+      end
     end
   end
 end

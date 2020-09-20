@@ -6,4 +6,9 @@ class Account < ApplicationRecord
 
   validates :identifier, presence: true
   validates :type, presence: true
+
+  enum status: {
+    active: 1,
+    inactive: 9,
+  }
 end

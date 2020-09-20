@@ -9,7 +9,7 @@ module Mutations
     argument :user_id, Int, required: true
 
     def resolve(**args)
-      channel_user = ChannelUser.create(channel_id: args[:channel_id], user_id: args[:user_id])
+      channel_user = ChannelUser.create_or_find_by(channel_id: args[:channel_id], user_id: args[:user_id])
       {
         channel_user: channel_user,
         result: channel_user.errors.blank?

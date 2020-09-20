@@ -10,18 +10,25 @@ class ApplicationController < ActionController::API
   end
 
   def authenticate_token
-    #authenticate_with_http_token do |token, options|
-      token = Firebase::Api.verify('application token')
-      if token.present?
-        account = Account.find_by(identifier: token['user_id'])
-        return unless account
+    return unless request.headers['Authorization']
 
-        self.current_account = account
-      else
-        decoded_token = JWT.decode(token, 'MY-SECRET', true, { algorithm: 'HS256' })
-        self.current_user = User.find(decoded_token.first['user_id'])
-      end
-    #end
+    kind, token = request.headers['Authorization'].split(' ')
+    return unless kind == 'Bearer'
+
+    firebase_token = Firebase::Api.verify(token)
+    if firebase_token.present?
+      account = Account.find_by(identifier: firebase_token['user_id'])
+      return unless account
+
+      self.current_account = account
+    else
+      decoded_token = JWT.decode(token, 'MY-SECRET', true, { algorithm: 'HS256' })
+      user = User.find(decoded_token.first['user_id'])
+      return unless user
+
+      self.current_account = user.account
+      self.current_user = user
+    end
   end
 
   def render_unauthorized

@@ -28,18 +28,18 @@ module Mutations
       } if alread_exists_account
       
       ActiveRecord::Base.transaction do
-        new_account = ::Account.create(
+        new_account = ::Account.active.create_or_find_by(
           identifier: args[:credentials][:identifier],
           type: type,
           password: 'pwd', #args[:credentials][:password],
           password_confirmation: 'pwd', #args[:credentials][:password],
         )
 
-        new_user = User.create(
+        new_user = User.create_or_find_by(
           name: args[:displayName] || args[:email]
         )
 
-        AccountUser.create(
+        AccountUser.create_or_find_by(
           account_id: new_account.id,
           user_id: new_user.id,
         )

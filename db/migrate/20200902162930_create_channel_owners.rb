@@ -3,6 +3,7 @@ class CreateChannelOwners < ActiveRecord::Migration[6.0]
     create_table :channel_owners do |t|
       t.references :user, null: false, foreign_key: true
       t.references :channel, null: false, foreign_key: true
+      t.integer :status, null: false
 
       t.timestamps
     end

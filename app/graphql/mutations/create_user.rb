@@ -8,11 +8,19 @@ module Mutations
     argument :name, String, required: true
 
     def resolve(**args)
-      user = User.create(name: args[:name])
-      {
-        user: user,
-        result: user.errors.blank?
-      }
+      ActiveRecord::Base.transaction do
+        account_users = AccountUser.eager_load(:user).where(account: context[:current_account])
+        user = account_users.select{|account_user| account_user.user.name == args[:name] }.first
+        unless user
+          user = User.create(name: args[:name])
+          AccountUser.create(account: context[:current_account], user: user)
+        end
+
+        {
+          user: user,
+          result: user.errors.blank?
+        }
+      end
     end
   end
 end

@@ -3,26 +3,27 @@ class GraphqlController < ApplicationController
   # This allows for outside API access while preventing CSRF attacks,
   # but you'll have to authenticate your user separately
   # protect_from_forgery with: :null_session
-  
+
   before_action :authenticate_token
 
   def execute
     variables = prepare_variables(params[:variables])
     query = params[:query]
     operation_name = params[:operationName]
+
+    Rails.logger.level = :debug
+
     context = {
       current_account: current_account,
       current_user: current_user,
     }
     result = AppSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result
-
   rescue => e
     raise e unless Rails.env.development?
     handle_error_in_development e
   end
 
-  private
 
   # Handle variables in form data, JSON body, or a blank value
   def prepare_variables(variables_param)
